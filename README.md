@@ -55,13 +55,23 @@ If you want to train/evaluate on your *own* data:
 > This post cover the nuScenes dataset format, but if you see properly you can organice your data with any other format and then converted it with the script defined before
 
 ### Materials for Data Collection
-- 6 cameras
-- 1 LIDAR
-- 5 RADAR
+This information was obteined from [nuSense-LidarSeg](https://www.nuscenes.org/nuscenes?tutorial=nuscenes)
+- 6x camera (Basler acA1600-60gc):
+- 1x spinning LIDAR (Velodyne HDL32E):
+- 5x long range RADAR sensor (Continental ARS 408-21):
 - GPS
 - IMU
+  
+### Car Set Up
+<p align="center">
+  <img src="images / distribution.png" alt="Distribution of the Components" width="700">
+  <br>
+  <em>Distribution of the components - Image taked from nuScenes Documentation</em>
+</p>  
 
-### Distribution of The Components
+
+
+
 
 
 
