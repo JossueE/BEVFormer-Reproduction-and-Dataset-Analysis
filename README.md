@@ -64,10 +64,54 @@ This information was obteined from [nuSense-LidarSeg](https://www.nuscenes.org/n
   
 ### Car Set Up
 <p align="center">
-  <img src="images / distribution.png" alt="Distribution of the Components" width="700">
+  <img src="images/distribution.png" alt="Distribution of the Components" width="700">
   <br>
-  <em>Distribution of the components - Image taked from nuScenes Documentation</em>
+  <em> Figure 1. nuScenes sensor suite and coverage. Top: placement and coordinate axes of the vehicle-mounted sensors (6 cameras, 5 radars, LiDAR, and IMU).
+</em>
 </p>  
+
+<p align="center">
+  <img src="images/camera-fov.37c13013.jpg" alt="Distribution of the Components" width="400">
+  <br>
+  <em> Figure 2. approximate sensor fields of view around the vehicle. Source: nuScenes documentation.</em>
+</p>  
+
+### Sensor calibration
+
+To achieve a high-quality multi-sensor dataset, it is essential to calibrate both **extrinsics** and **intrinsics** for every sensor. In this setup, **extrinsics are expressed relative to the ego frame** (defined as the midpoint of the rear vehicle axle). The main calibration steps are:
+
+- **LiDAR extrinsics:** Use a laser line/liner to accurately measure the LiDAR position relative to the ego frame.  
+- **Camera extrinsics:** Place a cube-shaped calibration target (three orthogonal planes with known patterns) in front of the camera and LiDAR. Detect the patterns, compute the camera-to-LiDAR transform by aligning the planes, then combine it with the LiDAR-to-ego transform to obtain the camera-to-ego extrinsics.  
+- **Radar extrinsics:** Mount the radar horizontally and collect data while driving in an urban environment. Filter out radar returns from moving objects, then calibrate the yaw angle via brute-force search to minimize compensated range rates for static objects.  
+- **Camera intrinsics:** Use a calibration board with known patterns to estimate camera intrinsic parameters and lens distortion.
+
+
+### Sensor Synchronization
+
+To achieve good cross-modality alignment between **LiDAR** and **cameras**, each camera exposure is **triggered when the top LiDAR sweeps across the center of the camera’s field of view (FOV)**. The **image timestamp** is the exposure trigger time, while the **LiDAR timestamp** corresponds to the time when the full rotation of the current LiDAR frame is completed. Since camera exposure is nearly instantaneous, this triggering strategy typically provides good alignment.
+
+- **Camera rate:** 12 Hz  
+- **LiDAR rate:** 20 Hz  
+- The **12 camera exposures** are distributed as evenly as possible across the **20 LiDAR scans**, so **not every LiDAR scan has a corresponding camera frame**.  
+- Using **12 Hz cameras** reduces **compute, bandwidth, and storage** requirements.
+
+> **Non-official note (my suggestion):** for ROS2-based pipelines, a practical approach is to implement **custom synchronization messages / logic** for LiDAR–IMU (and extend similarly for cameras). Example implementation: [https://github.com/JossueE/FastLIO-ROS2-Simulation/blob/main/src/lidar_imu_sync.cpp](https://github.com/JossueE/FastLIO-ROS2-Simulation/blob/main/src/lidar_imu_sync.cpp)
+
+### Data format
+
+nuScenes stores its dataset information in a **structured relational schema** (a set of linked “tables”) that defines how **sensor data** (images, LiDAR, RADAR), **calibration**, **ego/vehicle poses**, **maps**, and **annotations** are organized and connected. Each record is identified by a unique **token**, and relationships between records are established through **foreign keys**, enabling consistent linking across time (scenes → samples) and across modalities (samples → sensor measurements → annotations).
+
+This “data format” is important because it guarantees that every frame can be traced to:
+- the exact sensor capture (with timestamps),
+- the sensor geometry (intrinsics/extrinsics),
+- the vehicle pose in the world,
+- and the corresponding annotations.
+
+> For the official and detailed description of each object/table and its fields, see:  
+> [https://www.nuscenes.org/nuimages#tutorial](https://www.nuscenes.org/nuimages#tutorial)
+
+
+
 
 
 
