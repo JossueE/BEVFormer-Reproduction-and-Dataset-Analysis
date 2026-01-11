@@ -179,7 +179,7 @@ The nuScenes paper describes 23 general classes and shows them in a mapping tabl
 - wheelchair  
 - trafficcone  
 - trailer  
-- truck :contentReference[oaicite:15]{index=15}
+- truck 
 
 > For the **exact official naming (including prefixes)** and the authoritative taxonomy objects, consult the official devkit/tutorial references:
 > - https://www.nuscenes.org/nuscenes?tutorial=nuscenes  
