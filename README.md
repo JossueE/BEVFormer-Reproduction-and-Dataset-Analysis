@@ -121,9 +121,11 @@ This “data format” is important because it guarantees that every frame can b
 
 ## Data Annotation (nuScenes-style) — A faithful, step-by-step workflow
 
+[Tool nuScenes Annotator Instructions](https://github.com/nutonomy/nuscenes-devkit/blob/master/docs/instructions_nuscenes.md)
+
 This section documents a **practical annotation workflow** aligned with the official nuScenes description: **scene selection → 2 Hz keyframes → continuous 3D cuboid annotation with LiDAR/RADAR coverage → multiple validation passes → export in a linked database format**. 
 
-After adquire the data, have a proper sensor calibration and Synchronization we:
+After adquired the data, had a proper sensor calibration and Synchronization we:
 
 ### Select “scenes” (clips) to annotate
 
