@@ -112,8 +112,89 @@ This “data format” is important because it guarantees that every frame can b
 
 
 
+<p align="center">
+  <img src="images/schema.svg" alt="nuScenes Schema" width="900">
+  <br>
+  <em> Figure 2. nuScenes Schema</em>
+</p>  
 
 
+## Data Annotation (nuScenes-style) — A faithful, step-by-step workflow
+
+This section documents a **practical annotation workflow** aligned with the official nuScenes description: **scene selection → 2 Hz keyframes → continuous 3D cuboid annotation with LiDAR/RADAR coverage → multiple validation passes → export in a linked database format**. 
+---
+After adquire the data, have a proper sensor calibration and Synchronization we:
+
+### Select “scenes” (clips) to annotate
+
+nuScenes is composed of **1000 scenes**, each **20 seconds long**, chosen to emphasize diversity and challenging situations.  
+They also include **textual scene descriptions** written by expert annotators.
+
+**Reproduction checklist for an own dataset:**
+- Keep a consistent scene duration (e.g., 20s) so temporal statistics match.
+- Store a short text caption/description per scene (optional but useful).
+
+---
+
+### Sample keyframes at 2 Hz (the frames that receive GT labels)
+
+After scenes are selected, nuScenes **samples keyframes at 2 Hz** (image/lidar/radar keyframes). 
+That implies ~**40 labeled keyframes per 20s scene** (20s × 2 Hz), while intermediate sensor frames can still be kept for tracking/prediction. 
+
+**Key point:** decide and lock **keyframe timestamps**, because the rest of annotation is indexed around them.
+
+---
+
+### Annotate every keyframe (what each label must contain)
+
+For **each keyframe**, nuScenes annotates **all 23 object classes** with: 
+
+1) **Semantic category**  
+2) **Attributes** (they describe attributes such as **visibility, activity, and pose**; nuScenes overall includes **8 attributes**)
+3) **3D cuboid** parameterized as:  
+   **(x, y, z, width, length, height, yaw)** 
+
+#### The 23-class taxonomy (as referenced in the nuScenes paper)
+The nuScenes paper describes 23 general classes and shows them in a mapping table (prefixes omitted in the table for brevity). 
+
+- animal  
+- debris  
+- pushable_pullable  
+- bicycle_rack  
+- ambulance  
+- police  
+- barrier  
+- bicycle  
+- bus.bendy  
+- bus.rigid  
+- car  
+- construction  
+- motorcycle  
+- adult  
+- child  
+- construction_worker  
+- police_officer  
+- personal_mobility  
+- stroller  
+- wheelchair  
+- trafficcone  
+- trailer  
+- truck :contentReference[oaicite:15]{index=15}
+
+> For the **exact official naming (including prefixes)** and the authoritative taxonomy objects, consult the official devkit/tutorial references:
+> - https://www.nuscenes.org/nuscenes?tutorial=nuscenes  
+> - https://github.com/nutonomy/nuscenes-devkit/blob/master/docs/instructions_nuscenes.md  
+> The nuScenes paper explicitly points to the devkit as the public source for **taxonomy + annotation instructions**.
+
+---
+
+### References (official)
+- nuScenes paper (dataset design + annotation workflow + calibration/sync): https://ar5iv.labs.arxiv.org/html/1903.11027  
+- nuScenes tutorial: https://www.nuscenes.org/nuscenes?tutorial=nuscenes  
+- nuScenes devkit annotation instructions: https://github.com/nutonomy/nuscenes-devkit/blob/master/docs/instructions_nuscenes.md
+
+## Code Example
+[nuScenes tutorial](https://www.nuscenes.org/tutorials/nuscenes_tutorial.html)
 
 
 
